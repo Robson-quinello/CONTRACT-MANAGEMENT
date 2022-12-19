@@ -37,7 +37,7 @@ library(ape)
 library(cluster) 
 library(dendextend)
 
-#read text (baixar arquivo fonte e substituir dirretorio)
+#read text (baixar arquivo fonte e substituir diretorio)
 
 artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/InsightsR.pdf")
 class(artigo_TX)
