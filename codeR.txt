@@ -37,7 +37,7 @@ library(ape)
 library(cluster) 
 library(dendextend)
 
-#read text (baixar arquivo fonte e substituir diretorio)
+#read text (upload file)
 
 artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/InsightsR.pdf")
 class(artigo_TX)
@@ -119,15 +119,19 @@ wordcloud(dm$word, dm$freq, random.order=FALSE, colors=brewer.pal(8, "Dark2"))
 
 #sentiments (could be slow)
 
-texto <- scan (file = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/insightsR.txt", fileEncoding = "UTF-8", what = character(), sep = "\n", allowEscapes = T)
-texto_words <- get_tokens(texto)
+artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/insightsR.pdf")
+class(artigo_TX)
+View(artigo_TX)
+
+texto_words <- get_tokens(artigo_TX)
 head(texto_words)
 class (texto_words)
 length(texto_words)
 oracoes_vetor <- get_sentences(texto)
 length(oracoes_vetor)
+texto_words
 
-sentimentos_df <- get_nrc_sentiment(texto_palavras, lang="portuguese")
+sentimentos_df <- get_nrc_sentiment(texto_words, lang="portuguese")
 
 head(sentimentos_df)
 
