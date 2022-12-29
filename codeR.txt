@@ -1,10 +1,8 @@
 #Contract Management Analysis - FM MBA SENAI 2022
-#Prof Dr Robson Quinello
 
 #packages
 
 library(pdftools)
-library(tm) 
 library(topicmodels)
 library(textdata)
 library(rvest)
@@ -17,7 +15,6 @@ library(forcats)
 library(scales)
 library(stringr)
 library(ggplot2)
-library (ggplot)
 library(wordcloud)
 library(igraph)
 library(ggraph)
@@ -32,12 +29,11 @@ library(quanteda)
 library(tidyverse)
 library(hrbrthemes)
 library(kableExtra)
-library(syuzhet)
 library(ape)
 library(cluster) 
 library(dendextend)
 
-#read text (upload file)
+#read text (baixar arquivo fonte e substituir dirretorio)
 
 artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/InsightsR.pdf")
 class(artigo_TX)
@@ -54,14 +50,12 @@ a.dtm1 <- TermDocumentMatrix(a, control = list(wordLengths = c(3,10)))
 View (corpus)
 
 # remove stopwords
-c(tm::stopwords("portuguese"))
-newstopwords = stopwords ("portuguese")
-newstopwords <- findFreqTerms(a.dtm1, lowfreq=15) 
-View (newstopwords)
-
+stopwords_pt <- c(stopwords("pt"), "onde","bem","existe","possui","apenas","atualmente","ser", "dia", "pois","todos")
+newstopwords = stopwords_pt
+View (stopwords_pt)
 
 # remove most frequent words for this corpus
-a.dtm2 <- a.dtm1[!(a.dtm1$dimnames$Terms) %in% newstopwords,] 
+a.dtm2 <- a.dtm1[!(a.dtm1$dimnames$Terms) %in% stopwords_pt,] 
 inspect(a.dtm2)
 a.dtm3 <- removeSparseTerms(a.dtm2, sparse=0.5)
 a.dtm.df <- as.data.frame(inspect(a.dtm3))
@@ -81,16 +75,16 @@ plot(as.phylo(fit),
      tip.color=colors[clus])
 
 # get word counts in decreasing order
-m = as.matrix(t(a.dtm1))
+m = as.matrix(t(a.dtm2))
 word_freqs = sort(colSums(m), decreasing=TRUE) 
 
 # create a data frame with words and their frequencies
-dm = data.frame(word=names(word_freqs), freq=word_freqs)
-count(dm)
-view (dm)
+m = data.frame(word=names(word_freqs), freq=word_freqs)
+count(m)
+view (m)
 
 #plot
-dm %>%
+m %>%
   filter(!is.na(freq)) %>%
   arrange(freq) %>%
   tail(20) %>%
@@ -107,36 +101,23 @@ dm %>%
   ylab("Major words")
 
 # plot wordcloud
-m = as.matrix(t(a.dtm1))
+m = as.matrix(t(a.dtm2))
 view (m)
 
 # get word counts in decreasing order
 word_freqs = sort(colSums(m), decreasing=TRUE) 
 View (word_freqs)
 
-# plot wordcloud
-wordcloud(dm$word, dm$freq, random.order=FALSE, colors=brewer.pal(8, "Dark2"))
 
 #sentiments (could be slow)
 
-artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/insightsR.pdf")
-class(artigo_TX)
-View(artigo_TX)
-
-texto_words <- get_tokens(artigo_TX)
-head(texto_words)
-class (texto_words)
-length(texto_words)
-oracoes_vetor <- get_sentences(texto)
-length(oracoes_vetor)
-texto_words
-
+ 
 sentimentos_df <- get_nrc_sentiment(texto_words, lang="portuguese")
-
+ 
 head(sentimentos_df)
 
 summary(sentimentos_df)
-
+ 
 barplot(
   colSums(prop.table(sentimentos_df[, 1:8])),
   space = 0.2,
@@ -144,7 +125,7 @@ barplot(
   las = 1,
   cex.names = 0.7,
   col = brewer.pal(n = 10, name = "Set3"),
-  main = "Contract",
+  main = "Contract Management",
   sub = "prepared by RQ",
   xlab="sentiments", ylab = NULL)
 
@@ -160,5 +141,5 @@ plot(
   ylab= "Emotional Valence"
 )
 
-#END__________________________
 
+#END__________
