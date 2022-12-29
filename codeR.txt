@@ -33,7 +33,7 @@ library(ape)
 library(cluster) 
 library(dendextend)
 
-#read text (upload file)
+#read text (baixar arquivo fonte e substituir dirretorio)
 
 artigo_TX <- pdftools::pdf_text(pdf = "C:/Users/GUERREIRO/Desktop/FCD/BigDataRAzure/Cap05/InsightsR.pdf")
 class(artigo_TX)
@@ -82,6 +82,7 @@ word_freqs = sort(colSums(m), decreasing=TRUE)
 m = data.frame(word=names(word_freqs), freq=word_freqs)
 count(m)
 view (m)
+wordcloud(words = m$word, freq = m$freq, min.freq = 1, max.words=200, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
 
 #plot
 m %>%
@@ -100,9 +101,6 @@ m %>%
   xlab("") +
   ylab("Major words")
 
-# plot wordcloud
-m = as.matrix(t(a.dtm2))
-view (m)
 
 # get word counts in decreasing order
 word_freqs = sort(colSums(m), decreasing=TRUE) 
